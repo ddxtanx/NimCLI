@@ -1,22 +1,10 @@
-public class NimInputController {
-    public String getInputFromDialogBox(String message){
-        return "";
-    }
-    public String getUsername(){
-        return "";
-    }
-    public boolean binaryChoice(String question){//This handles a binary choice, like hard mode or keep playing
-        return true;
-    }
-    public boolean isHardMode(){
-        return binaryChoice("Do you want to play hard mode?");
-    }
+public interface NimInputController {
+    public String getInput(String message);
+    public String getUsername();
+    public boolean binaryChoice(String question);
+    public boolean isHardMode();
 
-    public int tokensChoice(int currentTokensAmount){
-        return 0;
-    }
+    public int tokensChoice(int currentTokensAmount);
 
-    public boolean wantsToKeepPlaying(){
-        return true;
-    }
+    public boolean wantsToKeepPlaying();
 }

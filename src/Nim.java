@@ -3,13 +3,22 @@ public class Nim {
     private String username;
     private int tokens;
     private boolean hardMode;
-    private NimInputController nimInput = new NimInputController();
+    private NimInputController nimInput;
     private boolean humanWin;
     private boolean currentPlayerIsHuman;
     private int totalGames = 0;
     private int humanWins = 0;
 
-    public Nim(){
+    public Nim(String args[]){
+        if(args.length>0){
+            if(args[0].equals("-g")){
+                nimInput = new NimGUIInputController();
+            }else{
+                nimInput = new NimCLIInputController();
+            }
+        } else{
+            nimInput = new NimCLIInputController();
+        }
         this.username = nimInput.getUsername();
         init();
     }
