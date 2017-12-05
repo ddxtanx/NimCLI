@@ -3,60 +3,98 @@ public class Nim {
     private String username;
     private int tokens;
     private boolean hardMode;
-    private NimInputController nimInput;
+    private NimInputController nimInput = new NimInputController();
     private boolean humanWin;
     private boolean currentPlayerIsHuman;
-    private int totalGames = 1;
+    private int totalGames = 0;
+    private int humanWins = 0;
 
-    public Nim(String username, boolean hardMode){
-        this.hardMode = hardMode;
-        //Get Hardmode from the user
-
-        Random rand = new Random();
-        int randTokens = rand.nextInt(100)+1;
-        this.tokens = randTokens;
-        this.username = username;
+    public Nim(){
+        this.username = nimInput.getUsername();
         init();
     }
 
     //Initializes the game with whoever is supposed to move first
     private void init(){
         Random rand = new Random();
+        int randTokens = rand.nextInt(100)+1; //Gets token amount
+        this.tokens = randTokens; //Sets the tokenAmount
+
+        System.out.println("The game starts with " + tokens + " tokens.");
+        boolean playingHardMode = nimInput.isHardMode();
+        this.hardMode = playingHardMode; //Determines and sets hardMode
+
         boolean firstPlayerIsHuman = rand.nextBoolean();
-        currentPlayerIsHuman = firstPlayerIsHuman;
+        currentPlayerIsHuman = firstPlayerIsHuman; //Sets first player
+
         if(!firstPlayerIsHuman){
+            System.out.println("The computer has the first move.");
             botRound(); //If the first move is for the bot, give it a special move at the start
+
         } else{
+            System.out.println("You have the first move!");
             playRound(); //If the first move is for the human, play a round normally
         }
     }
-
-    private void botRoundEasy(){
-
+    //These bot rounds return the amount of tokens the bot chose
+    private int botRoundEasy(){
+        Random rand = new Random();
+        int choice = rand.nextInt(tokens/2)+1;//Bot chooses a number of tokens in between 1 and tokens/2[inclusive]
+        return choice;
     }
 
-    private void botRoundHard(){
+    private int botRoundHard(){
+        //The bot needs to get to a value of 2^n - 1 to be guaranteed a win
+        //But if the value of tokens is already one less than a power of 2, it won't work
+        //This code will find if tokens is one less than a power of 2 by
+        //Examining log_2(tokens+1) and determining if it is an integer (with an epsilon of precision)
+        //It is tokens+1 because tokens + 1 = (2^n - 1) + 1 = 2^n is a power of 2, so log_2(2^n) will
+        //Be (will some epsilon of floating point error) an integer
 
+        double epsilon = 1E-12; //Just a randomly chosen epsilon value
+        double log2OfTokens = Math.log10(tokens + 1)/Math.log10(2); //This gets log2(tokens) by logarithm base change
+        double decimalPart = log2OfTokens - Math.floor(log2OfTokens); //This gets the decimal part of log2OfTokens
+        //For log2OfTokens to be an integer, it's decimalPart must be (within an epsilon of error) 0
+
+        boolean unableToDoOptimalMove = Math.abs(decimalPart)<epsilon;
+        if(unableToDoOptimalMove){
+            return botRoundEasy();
+        } else{
+            int choice = tokens - (int)(Math.pow(2, (int)log2OfTokens) - 1); //Take enough tokens to get to a power of 2 minus 1
+            if(choice < 1 || choice > tokens/2){
+                System.out.println("Bot chose badly!");
+                return 0;
+            }
+            return choice;
+        }
     }
 
     private void botRound(){
-        if(hardMode){
-            botRoundHard();
+        int botChoice;
+        if(tokens == 1){
+            botChoice = 1;
+        } else if(hardMode){
+            botChoice = botRoundHard();
         } else{
-            botRoundEasy();
+            botChoice = botRoundEasy();
         }
+        System.out.println("Bot takes " + botChoice + " tokens.");
+        tokens -= botChoice;
+        currentPlayerIsHuman = true; //Human plays now
+        System.out.println("There are now " + tokens + " tokens.");
     }
     private void humanRound(){
         int choice = nimInput.tokensChoice(tokens);
         tokens -= choice;
+        currentPlayerIsHuman = false; //Bot plays now
+        System.out.println("There are now " + tokens + " tokens.");
     }
 
     private void playRound(){
-        currentPlayerIsHuman = true;
         humanRound();
+
         if(tokens>0){
             botRound(); //Ensures bot doesn't get to play if the tokens are gone
-            currentPlayerIsHuman = false; //Current player is bot
         }
     }
 
@@ -64,9 +102,25 @@ public class Nim {
         while(tokens>0){
             playRound();
         }
+        humanWin = currentPlayerIsHuman; //If the game ends on a human turn, meaning the previous turn the bot took the last token, the human won
+        if(humanWin){
+            System.out.println("Congrats, " + username + "! You won this round!");
+        } else{
+            System.out.println("Oof, " + username + ", you lost. Better luck next time!");
+        }
     }
 
-    private void playGames(){
-
+    public void playGames(){
+        boolean stillPlaying = true;
+        while(stillPlaying){
+            playGame();
+            if(humanWin) humanWins++;
+            totalGames++;
+            System.out.println("The current record is");
+            System.out.printf("\t Human: " + humanWins + "\n");
+            System.out.printf("\t Computer: " + (totalGames-humanWins) + "\n");
+            stillPlaying = nimInput.wantsToKeepPlaying();
+            if(stillPlaying) init();
+        }
     }
 }

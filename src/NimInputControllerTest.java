@@ -1,5 +1,5 @@
 class NimInputControllerTest {
-    static NimInputController nim = new NimInputController();
+    static NimCLIInputController nim = new NimCLIInputController();
     static void getUsername() {
         System.out.println(nim.getUsername());
     }
