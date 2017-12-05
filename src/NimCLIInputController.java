@@ -27,7 +27,7 @@ public class NimCLIInputController implements NimInputController{
         }catch(NumberFormatException n){
             System.out.println("Nice try, entering a non-number. Try harder to fool me ;)");
         }
-        while(!(choice>0 && choice <= currentTokensAmount/2)){
+        while(( currentTokensAmount!= 1 && !(choice>0 && choice <= currentTokensAmount/2)) || (currentTokensAmount == 1 && choice!=1)){
             strChoice = getInput("Invalid choice, how many tokens do you want to take? [Inbetween 1 and " + (currentTokensAmount/2)+"]");
             try{
                 choice = Integer.parseInt(strChoice);

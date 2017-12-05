@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Random;
 public class Nim {
     private String username;
@@ -8,28 +9,38 @@ public class Nim {
     private boolean currentPlayerIsHuman;
     private int totalGames = 0;
     private int humanWins = 0;
+    private boolean isGUI;
 
     public Nim(String args[]){
         if(args.length>0){
             if(args[0].equals("-g")){
                 nimInput = new NimGUIInputController();
+                isGUI = true;
             }else{
                 nimInput = new NimCLIInputController();
+                isGUI = false;
             }
         } else{
             nimInput = new NimCLIInputController();
+            isGUI = false;
         }
         this.username = nimInput.getUsername();
         init();
     }
-
+    private void messageUser(String message){
+        if(isGUI){
+            JOptionPane.showMessageDialog(null, message);
+        } else{
+            System.out.println(message);
+        }
+    }
     //Initializes the game with whoever is supposed to move first
     private void init(){
         Random rand = new Random();
         int randTokens = rand.nextInt(100)+1; //Gets token amount
         this.tokens = randTokens; //Sets the tokenAmount
 
-        System.out.println("The game starts with " + tokens + " tokens.");
+        messageUser("The game starts with " + tokens + " tokens.");
         boolean playingHardMode = nimInput.isHardMode();
         this.hardMode = playingHardMode; //Determines and sets hardMode
 
@@ -37,11 +48,11 @@ public class Nim {
         currentPlayerIsHuman = firstPlayerIsHuman; //Sets first player
 
         if(!firstPlayerIsHuman){
-            System.out.println("The computer has the first move.");
+            messageUser("The computer has the first move.");
             botRound(); //If the first move is for the bot, give it a special move at the start
 
         } else{
-            System.out.println("You have the first move!");
+            messageUser("You have the first move!");
             playRound(); //If the first move is for the human, play a round normally
         }
     }
@@ -87,16 +98,16 @@ public class Nim {
         } else{
             botChoice = botRoundEasy();
         }
-        System.out.println("Bot takes " + botChoice + " tokens.");
+        System.out.println();
         tokens -= botChoice;
         currentPlayerIsHuman = true; //Human plays now
-        System.out.println("There are now " + tokens + " tokens.");
+        messageUser("Bot takes " + botChoice + " tokens. \n" + "There are now " + tokens + " tokens.");
     }
     private void humanRound(){
         int choice = nimInput.tokensChoice(tokens);
         tokens -= choice;
         currentPlayerIsHuman = false; //Bot plays now
-        System.out.println("There are now " + tokens + " tokens.");
+        messageUser("There are now " + tokens + " tokens.");
     }
 
     private void playRound(){
@@ -113,9 +124,9 @@ public class Nim {
         }
         humanWin = currentPlayerIsHuman; //If the game ends on a human turn, meaning the previous turn the bot took the last token, the human won
         if(humanWin){
-            System.out.println("Congrats, " + username + "! You won this round!");
+            messageUser("Congrats, " + username + "! You won this round!");
         } else{
-            System.out.println("Oof, " + username + ", you lost. Better luck next time!");
+            messageUser("Oof, " + username + ", you lost. Better luck next time!");
         }
     }
 
@@ -125,9 +136,10 @@ public class Nim {
             playGame();
             if(humanWin) humanWins++;
             totalGames++;
-            System.out.println("The current record is");
-            System.out.printf("\t Human: " + humanWins + "\n");
-            System.out.printf("\t Computer: " + (totalGames-humanWins) + "\n");
+
+             messageUser("The current record is" +
+                         "\t Human: " + humanWins + "\n" +
+                         "\t Computer: " + (totalGames-humanWins) + "\n");
             stillPlaying = nimInput.wantsToKeepPlaying();
             if(stillPlaying) init();
         }
