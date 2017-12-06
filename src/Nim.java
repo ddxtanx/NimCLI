@@ -137,7 +137,7 @@ public class Nim {
             if(humanWin) humanWins++;
             totalGames++;
 
-             messageUser("The current record is" +
+             messageUser("The current record is\n" +
                          "\t Human: " + humanWins + "\n" +
                          "\t Computer: " + (totalGames-humanWins) + "\n");
             stillPlaying = nimInput.wantsToKeepPlaying();

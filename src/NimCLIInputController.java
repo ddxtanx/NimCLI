@@ -21,14 +21,14 @@ public class NimCLIInputController implements NimInputController{
 
     public int tokensChoice(int currentTokensAmount){
         int choice = 0;
-        String strChoice = getInput("How many tokens do you want to take? [Inbetween 1 and " + (currentTokensAmount/2)+"]");
+        String strChoice = getInput("How many tokens do you want to take? [Inbetween 1 and " + ((currentTokensAmount!=1)?(currentTokensAmount/2):(1))+"]");
         try{
             choice = Integer.parseInt(strChoice);
         }catch(NumberFormatException n){
             System.out.println("Nice try, entering a non-number. Try harder to fool me ;)");
         }
         while(( currentTokensAmount!= 1 && !(choice>0 && choice <= currentTokensAmount/2)) || (currentTokensAmount == 1 && choice!=1)){
-            strChoice = getInput("Invalid choice, how many tokens do you want to take? [Inbetween 1 and " + (currentTokensAmount/2)+"]");
+            strChoice = getInput("Invalid choice, how many tokens do you want to take? [Inbetween 1 and " + ((currentTokensAmount!=1)?(currentTokensAmount/2):(1))+"]");
             try{
                 choice = Integer.parseInt(strChoice);
             }catch(NumberFormatException n){
