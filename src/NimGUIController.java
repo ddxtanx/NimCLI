@@ -1,7 +1,7 @@
 
 import javax.swing.*;
 
-public class NimGUIInputController implements NimInputController{
+public class NimGUIController implements NimInputController{
         public String getInput(String message){
             return JOptionPane.showInputDialog(null,message, "Game of Nim", JOptionPane.QUESTION_MESSAGE);
         }
@@ -44,4 +44,8 @@ public class NimGUIInputController implements NimInputController{
         public boolean wantsToKeepPlaying(){
             return binaryChoice("Do you want to keep playing?");
         }
+
+    public void messageUser(String message){
+            JOptionPane.showMessageDialog(null, message);
+    }
 }

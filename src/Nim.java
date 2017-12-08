@@ -1,10 +1,9 @@
-import javax.swing.*;
 import java.util.Random;
 public class Nim {
     private String username;
     private int tokens;
     private boolean hardMode;
-    private NimInputController nimInput;
+    private NimInputController nimController;
     private boolean humanWin;
     private boolean currentPlayerIsHuman;
     private int totalGames = 0;
@@ -14,25 +13,18 @@ public class Nim {
     public Nim(String args[]){
         if(args.length>0){
             if(args[0].equals("-g")){
-                nimInput = new NimGUIInputController();
+                nimController = new NimGUIController();
                 isGUI = true;
             }else{
-                nimInput = new NimCLIInputController();
+                nimController = new NimCLIController();
                 isGUI = false;
             }
         } else{
-            nimInput = new NimCLIInputController();
+            nimController = new NimCLIController();
             isGUI = false;
         }
-        this.username = nimInput.getUsername();
+        this.username = nimController.getUsername();
         init();
-    }
-    private void messageUser(String message){
-        if(isGUI){
-            JOptionPane.showMessageDialog(null, message);
-        } else{
-            System.out.println(message);
-        }
     }
     //Initializes the game with whoever is supposed to move first
     private void init(){
@@ -40,19 +32,19 @@ public class Nim {
         int randTokens = rand.nextInt(100)+1; //Gets token amount
         this.tokens = randTokens; //Sets the tokenAmount
 
-        messageUser("The game starts with " + tokens + " tokens.");
-        boolean playingHardMode = nimInput.isHardMode();
+        nimController.messageUser("The game starts with " + tokens + " tokens.");
+        boolean playingHardMode = nimController.isHardMode();
         this.hardMode = playingHardMode; //Determines and sets hardMode
 
         boolean firstPlayerIsHuman = rand.nextBoolean();
         currentPlayerIsHuman = firstPlayerIsHuman; //Sets first player
 
         if(!firstPlayerIsHuman){
-            messageUser("The computer has the first move.");
+            nimController.messageUser("The computer has the first move.");
             botRound(); //If the first move is for the bot, give it a special move at the start
 
         } else{
-            messageUser("You have the first move!");
+            nimController.messageUser("You have the first move!");
             playRound(); //If the first move is for the human, play a round normally
         }
     }
@@ -98,16 +90,15 @@ public class Nim {
         } else{
             botChoice = botRoundEasy();
         }
-        System.out.println();
         tokens -= botChoice;
         currentPlayerIsHuman = true; //Human plays now
-        messageUser("Bot takes " + botChoice + " tokens. \n" + "There are now " + tokens + " tokens.");
+        nimController.messageUser("Bot takes " + botChoice + " tokens. \n" + "There are now " + tokens + " tokens.");
     }
     private void humanRound(){
-        int choice = nimInput.tokensChoice(tokens);
+        int choice = nimController.tokensChoice(tokens);
         tokens -= choice;
         currentPlayerIsHuman = false; //Bot plays now
-        messageUser("There are now " + tokens + " tokens.");
+        nimController.messageUser("There are now " + tokens + " tokens.");
     }
 
     private void playRound(){
@@ -124,9 +115,9 @@ public class Nim {
         }
         humanWin = currentPlayerIsHuman; //If the game ends on a human turn, meaning the previous turn the bot took the last token, the human won
         if(humanWin){
-            messageUser("Congrats, " + username + "! You won this round!");
+            nimController.messageUser("Congrats, " + username + "! You won this round!");
         } else{
-            messageUser("Oof, " + username + ", you lost. Better luck next time!");
+            nimController.messageUser("Oof, " + username + ", you lost. Better luck next time!");
         }
     }
 
@@ -137,10 +128,10 @@ public class Nim {
             if(humanWin) humanWins++;
             totalGames++;
 
-             messageUser("The current record is\n" +
+            nimController.messageUser("The current record is\n" +
                          "\t Human: " + humanWins + "\n" +
                          "\t Computer: " + (totalGames-humanWins) + "\n");
-            stillPlaying = nimInput.wantsToKeepPlaying();
+            stillPlaying = nimController.wantsToKeepPlaying();
             if(stillPlaying) init();
         }
     }

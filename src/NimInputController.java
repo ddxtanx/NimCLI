@@ -7,4 +7,6 @@ public interface NimInputController {
     public int tokensChoice(int currentTokensAmount);
 
     public boolean wantsToKeepPlaying();
+
+    public void messageUser(String message);
 }

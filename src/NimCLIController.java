@@ -1,5 +1,5 @@
 import java.util.Scanner;
-public class NimCLIInputController implements NimInputController{
+public class NimCLIController implements NimInputController{
     private Scanner scan = new Scanner(System.in);
     public String getInput(String message){
         System.out.println(message);
@@ -40,5 +40,9 @@ public class NimCLIInputController implements NimInputController{
 
     public boolean wantsToKeepPlaying(){
         return binaryChoice("Do you want to keep playing?");
+    }
+
+    public void messageUser(String message) {
+        System.out.println(message);
     }
 }
