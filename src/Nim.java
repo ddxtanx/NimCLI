@@ -8,20 +8,16 @@ public class Nim {
     private boolean currentPlayerIsHuman;
     private int totalGames = 0;
     private int humanWins = 0;
-    private boolean isGUI;
 
     public Nim(String args[]){
         if(args.length>0){
             if(args[0].equals("-g")){
                 nimController = new NimGUIController();
-                isGUI = true;
             }else{
                 nimController = new NimCLIController();
-                isGUI = false;
             }
         } else{
             nimController = new NimCLIController();
-            isGUI = false;
         }
         this.username = nimController.getUsername();
         init();
@@ -29,12 +25,10 @@ public class Nim {
     //Initializes the game with whoever is supposed to move first
     private void init(){
         Random rand = new Random();
-        int randTokens = rand.nextInt(100)+1; //Gets token amount
-        this.tokens = randTokens; //Sets the tokenAmount
+        this.tokens = rand.nextInt(100)+1; //Sets the tokenAmount
 
         nimController.messageUser("The game starts with " + tokens + " tokens.");
-        boolean playingHardMode = nimController.isHardMode();
-        this.hardMode = playingHardMode; //Determines and sets hardMode
+        this.hardMode = nimController.isHardMode(); //Determines and sets hardMode
 
         boolean firstPlayerIsHuman = rand.nextBoolean();
         currentPlayerIsHuman = firstPlayerIsHuman; //Sets first player
@@ -51,8 +45,7 @@ public class Nim {
     //These bot rounds return the amount of tokens the bot chose
     private int botRoundEasy(){
         Random rand = new Random();
-        int choice = rand.nextInt(tokens/2)+1;//Bot chooses a number of tokens in between 1 and tokens/2[inclusive]
-        return choice;
+        return rand.nextInt(tokens/2)+1;
     }
 
     private int botRoundHard(){

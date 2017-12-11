@@ -6,8 +6,7 @@ public class NimGUIController implements NimInputController{
             return JOptionPane.showInputDialog(null,message, "Game of Nim", JOptionPane.QUESTION_MESSAGE);
         }
         public String getUsername(){
-            String name = getInput("Please enter your name:");
-            return name;
+            return getInput("Please enter your name:");
         }
         public boolean binaryChoice(String question){//This handles a binary choice, like hard mode or keep playing
             String choice = "";

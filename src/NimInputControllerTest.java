@@ -1,5 +1,5 @@
 class NimInputControllerTest {
-    static NimCLIController nim = new NimCLIController();
+    static NimInputController nim = new NimCLIController();
     static void getUsername() {
         System.out.println(nim.getUsername());
     }
@@ -13,6 +13,9 @@ class NimInputControllerTest {
     }
 
     public static void main(String[] args) {
+        if(args.length>0 && args[0].equals("-g")){
+            nim = new NimGUIController();
+        }
         getUsername();
         isHardMode();
         tokensChoice();
