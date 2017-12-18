@@ -25,7 +25,7 @@ public class Nim {
     //Initializes the game with whoever is supposed to move first
     private void init(){
         Random rand = new Random();
-        this.tokens = rand.nextInt(100)+1; //Sets the tokenAmount
+        this.tokens = rand.nextInt(91)+10; //Sets the tokenAmount
 
         nimController.messageUser("The game starts with " + tokens + " tokens.");
         this.hardMode = nimController.isHardMode(); //Determines and sets hardMode
